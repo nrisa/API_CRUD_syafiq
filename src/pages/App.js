@@ -6,20 +6,18 @@ import InData from "../components/InData"
 function App() {
   const [datas, setDatas] = useState([])
   const [title, setTitle] = useState("Form Tambah")
-  const [ids, setIds] = useState("")
+  const [content, setContent] = useState({})
+
+  const [editGambar, setEditGambar] = useState(null)
+  const [editNama, setEditNama] = useState('')
+  const [editAgama, setEditAgama] = useState('')
+  const [editTl, setEditTl] = useState('')
 
   // data
   const [gambar, setGambar] = useState(null)
   const [nama, setNama] = useState('')
   const [agama, setAgama] = useState('')
   const [tl, setTl] = useState('')
-
-  let formDatas = new FormData()
-  formDatas.append("gambar", gambar)
-  formDatas.append("nama", nama)
-  formDatas.append("agama", agama)
-  formDatas.append("tanggalLahir", tl)
-
 
   useEffect(() => {
     fetch('https://app-id1.herokuapp.com/id/get')
@@ -36,6 +34,12 @@ function App() {
   } 
 
   const posting = (e) => {
+    let formDatas = new FormData()
+    formDatas.append("gambar", gambar)
+    formDatas.append("nama", nama)
+    formDatas.append("agama", agama)
+    formDatas.append("tanggalLahir", tl)
+
     e.preventDefault()
     fetch('https://app-id1.herokuapp.com/id/post', {
       method: "POST",
@@ -46,19 +50,29 @@ function App() {
   } 
 
   const editUp = (e) => {
+    let formDatas = new FormData()
+    formDatas.append("gambar", editGambar)
+    formDatas.append("nama", editNama)
+    formDatas.append("agama", editAgama)
+    formDatas.append("tanggalLahir", editTl)
+
     setTitle("Form Update")
     e.preventDefault()
-    fetch('https://app-id1.herokuapp.com/id/put/'+ ids, {
+    fetch('https://app-id1.herokuapp.com/id/put/'+ content.id, {
       method: "PUT",
-      body: formDatas
+      body: formDatas 
     })
       .then(res => res.json())
       .then(res => alert(res.message))
   } 
 
   const setEdit = () => {
-    console.log(ids)
+    console.log(content)
     setTitle("Form Update")
+    setEditGambar(content.gambar)
+    setEditNama(content.nama)
+    setEditAgama(content.agama)
+    setEditTl(content.tl)
   }
 
   return (
@@ -73,6 +87,14 @@ function App() {
     nama={setNama} 
     agama={setAgama}
     tl={setTl}
+    ugambar={setEditGambar}
+    vgambar={editGambar}
+    unama={setEditNama}
+    vnama={editNama}
+    uagama={setEditAgama}
+    vagama={editAgama}
+    utl={setEditTl}
+    vtl={editTl}
     />
     <br /><br />
     <h1 style={{marginLeft:"20px"}}>Data Profile</h1>
@@ -87,7 +109,7 @@ function App() {
         tl={data.tanggalLahir} 
         del={del} 
         id={data._id} 
-        setids={setIds}
+        set={setContent}
         />
       )}
     </div>
